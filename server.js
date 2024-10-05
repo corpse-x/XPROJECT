@@ -1,38 +1,38 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const cors = require('cors');
+const { MongoClient } = require('mongodb');
 const app = express();
 
-app.use(express.json());
-app.use(cors());
+// MongoDB Atlas connection string (replace <password> and <dbname> with your actual details
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/telegram-widget', { useNewUrlParser: true, useUnifiedTopology: true });
+const uri = 'mongodb+srv://arnavgupta0078:arnav@cluster3301.ojyvd.mongodb.net/?retryWrites=true&w=majority';
 
-const userSchema = new mongoose.Schema({
-    username: String,
-    password: String
+// Create a MongoClient instance
+const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
 
-const User = mongoose.model('User', userSchema);
+// Define a route to test the connection
+app.get('/', async (req, res) => {
+    try {
+        await client.connect(); // Connect to MongoDB Atlas
+        const database = client.db('PdoXDB'); // Use the desired database name
+        const collection = database.collection('users'); // Use the desired collection name
 
-// Signup Route
-app.post('/signup', async (req, res) => {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = new User({ username: req.body.username, password: hashedPassword });
-    await user.save();
-    res.status(201).send('User created');
-});
+        // Example: Find all users
+        const users = await collection.find().toArray();
 
-// Login Route
-app.post('/login', async (req, res) => {
-    const user = await User.findOne({ username: req.body.username });
-    if (user && await bcrypt.compare(req.body.password, user.password)) {
-        res.send('Login successful');
-    } else {
-        res.status(400).send('Invalid credentials');
+        res.send(users); // Send users as response
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error connecting to the database');
+    } finally {
+        await client.close(); // Close the connection
     }
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+// Start the server
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
