@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Kali Linux UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <a href="#" id="home-tab">Home</a>
+        <a href="#" id="account-tab">Account</a>
+        <a href="#" id="game-tab">Game</a>
+    </div>
+
+    <div id="main-content">
+        <div id="home-content">Welcome to your Home!</div>
+        <div id="account-content" style="display: none;">
+            <h3>Your Account Details</h3>
+            <img src="default-user.png" alt="User Icon" class="profile-icon">
+            <p>Username: JohnDoe</p>
+            <p>Email: johndoe@example.com</p>
+        </div>
+        <div id="game-content" style="display: none;">
+            <h3>Game Placeholder</h3>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
